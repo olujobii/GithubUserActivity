@@ -8,15 +8,6 @@ public class GitHubActivity {
     static void main(String[] args) {
         String username = "olujobii";
 
-//        if(args.length == 0){
-//            System.out.println("No username is specified");
-//            return;
-//        }
-//
-//        if(args.length != 1){
-//            System.out.println("Wrong usage");
-//        }
-
         APIRepository apiRepository = new APIRepository(username);
         HttpResponse<String> httpResponse;
 
@@ -26,7 +17,11 @@ public class GitHubActivity {
                 System.out.println("Username not found");
                 return;
             }
-            listEvents(httpResponse);
+            if(httpResponse.statusCode() != 200){
+                System.out.println("Error, response code: "+httpResponse.statusCode());
+                return;
+            }
+            listEvents(httpResponse,username);
         }
         catch(URISyntaxException e)
         {
@@ -38,7 +33,7 @@ public class GitHubActivity {
         }
     }
 
-    static void listEvents(HttpResponse<String> httpResponse){
+    static void listEvents(HttpResponse<String> httpResponse,String username){
         JsonArray jsonArray = JsonParser.parseString(httpResponse.body()).getAsJsonArray();
         if(jsonArray.isEmpty())
         {
@@ -46,6 +41,7 @@ public class GitHubActivity {
             return;
         }
 
+        System.out.println("Github Activity for "+username);
         for(var elements : jsonArray){
             JsonObject jsonObject = elements.getAsJsonObject();
             String type = jsonObject.get("type").getAsString(); //Get type of event
@@ -54,10 +50,8 @@ public class GitHubActivity {
 
             switch(type){
                 case "PushEvent":
-                    int commit = payload.has("commits") ? payload.get("commits").getAsJsonArray().size() : 1;
-
                     System.out.println("\n-------------------------------");
-                    System.out.println("Pushed "+commit +" commit(s) to "+repoName);
+                    System.out.println("Pushed commit(s) to "+repoName);
                     System.out.println("-------------------------------");
                     break;
                 case "WatchEvent":
@@ -75,11 +69,35 @@ public class GitHubActivity {
                     System.out.println("Deleted git branch at "+repoName);
                     System.out.println("-------------------------------");
                     break;
+                case "IssuesEvent":
+                    String issuesEventAction = payload.get("action").getAsString();
+                    System.out.println("\n-------------------------------");
+                    System.out.println(issuesEventAction+ " an issue in "+repoName);
+                    System.out.println("-------------------------------");
+                    break;
+                case "PullRequestEvent":
+                    String pullRequestAction = payload.get("action").getAsString();
+                    System.out.println("\n-------------------------------");
+                    System.out.println(pullRequestAction+ " a pull request in "+repoName);
+                    System.out.println("-------------------------------");
+                    break;
+                case "PublicEvent":
+                    System.out.println("\n-------------------------------");
+                    System.out.println(repoName+" made public");
+                    System.out.println("-------------------------------");
+                    break;
+                case "ForkEvent":
+                    String forkEventAction = payload.get("action").getAsString();
+                    System.out.println("\n-------------------------------");
+                    System.out.println(forkEventAction +" "+repoName);
+                    System.out.println("-------------------------------");
+                    break;
                 default:
                     System.out.println("\n-------------------------------");
                     System.out.println("Event Type: "+type);
                     System.out.println("GitHub Repository: "+repoName);
                     System.out.println("-------------------------------");
+                    break;
             }
         }
     }
