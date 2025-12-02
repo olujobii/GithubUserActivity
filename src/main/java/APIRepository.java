@@ -14,7 +14,7 @@ public class APIRepository {
         this.URL = String.format("https://api.github.com/users/%s/events",username);
     }
 
-    public void fetchData() throws URISyntaxException,IOException,InterruptedException {
+    public HttpResponse<String> fetchData() throws URISyntaxException,IOException,InterruptedException {
         //Building the request
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(new URI(URL))
@@ -27,6 +27,6 @@ public class APIRepository {
         httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         }
 
-        System.out.println(httpResponse.body());
+        return httpResponse;
     }
 }
