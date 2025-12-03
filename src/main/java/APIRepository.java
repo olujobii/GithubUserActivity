@@ -13,7 +13,6 @@ public class APIRepository {
     }
 
     public HttpResponse<String> fetchData() throws URISyntaxException,IOException,InterruptedException {
-        //Building the request
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(new URI(URL))
                 .header("Accept","application/vnd.github+json")
