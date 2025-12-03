@@ -6,9 +6,13 @@ import java.net.http.HttpResponse;
 
 public class GitHubActivity {
     static void main(String[] args) {
-        String username = "olujobii";
+//        String username = "olujobii";
+        if(args.length != 1){
+            System.out.println("Incorrect usage");
+            return;
+        }
 
-        APIRepository apiRepository = new APIRepository(username);
+        APIRepository apiRepository = new APIRepository(args[0]);
         HttpResponse<String> httpResponse;
 
         try{
@@ -21,7 +25,7 @@ public class GitHubActivity {
                 System.out.println("Error, response code: "+httpResponse.statusCode());
                 return;
             }
-            listEvents(httpResponse,username);
+            listEvents(httpResponse,args[0]);
         }
         catch(URISyntaxException e)
         {
@@ -45,8 +49,8 @@ public class GitHubActivity {
         for(var elements : jsonArray){
             JsonObject jsonObject = elements.getAsJsonObject();
             String type = jsonObject.get("type").getAsString(); //Get type of event
-            String repoName = jsonObject.get("repo").getAsJsonObject().get("name").getAsString(); //Get url to repository
-            JsonObject payload = jsonObject.get("payload").getAsJsonObject(); //Get payload
+            String repoName = jsonObject.get("repo").getAsJsonObject().get("name").getAsString(); //Get repository name
+            JsonObject payload = jsonObject.get("payload").getAsJsonObject(); //Get payload activity
 
             switch(type){
                 case "PushEvent":
