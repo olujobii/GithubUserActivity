@@ -6,7 +6,6 @@ import java.net.http.HttpResponse;
 
 public class GitHubActivity {
     static void main(String[] args) {
-//        String username = "olujobii";
         if(args.length != 1){
             System.out.println("Incorrect usage");
             return;
@@ -34,6 +33,7 @@ public class GitHubActivity {
         }
         catch(InterruptedException | IOException e){
             System.out.println("An error occurred while fetching data");
+            System.out.println(e.getMessage());
         }
     }
 
