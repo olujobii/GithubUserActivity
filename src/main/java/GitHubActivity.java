@@ -7,7 +7,7 @@ import java.net.http.HttpResponse;
 public class GitHubActivity {
     static void main(String[] args) {
         if(args.length != 1){
-            System.out.println("Incorrect usage");
+            System.out.println("Incorrect usage, pass in a github-username when running the program.");
             return;
         }
 
